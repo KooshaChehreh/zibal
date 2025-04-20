@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    container_name: django_app
+    command: gunicorn --reload --workers=4 --worker-tmp-dir /dev/shm --bind=0.0.0.0:8000 --chdir /app/zibal zibal.wsgi
+    volumes:
+      - .:/app  
+    ports:
+      - "8000:8000"  
+    depends_on:
+      - db 
+    environment:
+      - DJANGO_SETTINGS_MODULE=zibal.settings  
+
+  db:
+    image: mongo:5.0 
+    container_name: db 
+    ports:
+      - "27017:27017" 
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
